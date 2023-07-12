@@ -2,7 +2,7 @@
 # Description:  This script is semi-automatically removing the
 #               default Applications installed on Windows.
 # Created:      2020-07-17 - Vinalti
-# Last Update:  2022-07-13 - Vinalti
+# Last Update:  2023-07-12 - Vinalti
 # Author:       Vinalti
 # Contributors: - ...
 
@@ -143,7 +143,7 @@ RemoveSoftware "Facebook"
 promptContinue("Continue with Software recommended for removal ?")
 
 RemoveSoftware "phone"          # Phone and Phone Companion apps together
-RemoveSoftware "feedback" "Feedback Hub" # Feedback Hub:
+RemoveSoftware "feedback" "Feedback Hub" # Feedback Hub
 RemoveSoftware "xbox"           # All Xbox Apps
 RemoveSoftware "communicationsapps"  # Calendar and Mail apps together
 RemoveSoftware "todos"
@@ -161,6 +161,10 @@ RemoveSoftware "holographic"    # Windows Holographic
 RemoveSoftware "mixedReality" "Mixed Reality Portal" 
 RemoveSoftware "Dolby"
 RemoveSoftware "Teams"
+# Windows 11 Specific
+RemoveSoftware "Clipchamp" "Clipchamp Video Editor"
+RemoveSoftware "GetHelp" # GetHelp Application
+RemoveSoftware "GamingApp" # GetHelp Application
 
 # Dell Laptop Specific
 RemoveSoftware "partnerpromo"  "Dell PromoApp"
