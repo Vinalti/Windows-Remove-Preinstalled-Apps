@@ -2,7 +2,7 @@
 # Description:  This script is semi-automatically removing the
 #               default Applications installed on Windows.
 # Created:      2020-07-17 - Vinalti
-# Last Update:  2022-07-13 - Vinalti
+# Last Update:  2023-07-12 - Vinalti
 # Author:       Vinalti
 # Contributors: - ...
 
