@@ -2,6 +2,13 @@
 Script to remove default application in Windows 10/11
 
 ## How to Use
+### OneLiner
+Open a terminal with powershell and enter the following command :
+```ps1
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser && Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Vinalti/Windows-Remove-Preinstalled-Apps/main/remove_preinstalled_apps.ps1" -OutFile ./_rpa.ps1 && ./_rpa.ps1 
+```
+_Reminder: As a good practice do not execute a script on your machine without double-checking its behavior. Make sure you understand what the above command is doing._
+
 ### From Explorer
 1. Download the file `remove_preinstalled_apps.ps1`
 2. Execute `remove_preinstalled_apps.ps1` by doing right-click > `Run with PowerShell`
