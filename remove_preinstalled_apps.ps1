@@ -36,6 +36,26 @@ function log($msg = "") {
     Write-Output $msg;
 }
 
+function isAdmin($promptUser=$False){
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    $admin = $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if ($promptUser){
+        $r=0
+        $wshell = New-Object -ComObject Wscript.Shell -ErrorAction Inquire
+        if ( $admin ) {
+            $r = $wshell.Popup("You are Admin. Packages will be removed for every user, continue ?", 0, "You are ADMIN", 32+4)
+            infoPopup "Some packages may fail to be removed. Running the script a second time should remove them. Otherwise, please report the issue on GitHub. " 0
+        } else {
+            $r = $wshell.Popup("You are NOT admin, only current user's package will be removed.", 0, "You are USER", 48+1)
+        }
+        if ($r -eq 7 -or $r -eq 2){
+            log "Exiting..."
+            exit
+        }
+    }
+    return $admin
+}
+
 function promptContinue($message, $icon=32){
     # Prompt user to continue or abort. Exit Software if Abort is selected.
     $wshell = New-Object -ComObject Wscript.Shell -ErrorAction Inquire
@@ -59,7 +79,14 @@ function RemoveSoftware($name, $displayName=$name){
     # installed and removable. $displayName is shown to the user. $name is used to
     # match the application(s) to remove.
     $wshell = New-Object -ComObject Wscript.Shell -ErrorAction Inquire
-    $t = Get-AppxPackage *$name*
+
+    $t = $false
+    if (isAdmin){
+        $t = Get-AppxPackage *$name* -AllUsers
+    }
+    else {
+        $t = Get-AppxPackage *$name*
+    }
     $nonRemovable =  $t|Where-Object{$_.NonRemovable -eq $True}
     $t =  $t|Where-Object{$_.NonRemovable -eq $False}
     $r = 0
@@ -89,21 +116,32 @@ function RemoveSoftware($name, $displayName=$name){
 
     if (($r -eq 6)){
         # REMOVE PACKAGE IF USER ACCEPTED ##
-        $t | Remove-AppxPackage
-        if ($? -eq $False){
-            # If an error happened during deinstallation warn user
+        $r = $False
+        if (isAdmin){
+            $t | Remove-AppxPackage -AllUser
+            $r = $?
+        }
+        else {
+            $t | Remove-AppxPackage
+            $r = $?
+        }
+        if ($r -eq $False){
+            # If an error happened during deinstallation, warn user
             log "[ERR ] Package $displayName not removed."
-            $wshell.Popup("Impossible to remove $displayName.", 1, "Remove Software", 48)
+            $wshell.Popup("Error while removing $displayName.", 2, "Remove Software", 48)
             return 0
         }
         log "[DEL ] Package $displayName removed."
         # $wshell.Popup("$displayName Uninstalled.", 1, "Remove Software", 64)
-        infoPopup("$displayName Uninstalled.")
+        infoPopup "$displayName Uninstalled."
         return $n
     }
     log "[skip] Skipping $displayName..."
     return
 }
+
+
+isAdmin($True)
 
 ### TO BE REMOVED ###
 promptContinue("Starting with Softwares you probably want to remove.")
